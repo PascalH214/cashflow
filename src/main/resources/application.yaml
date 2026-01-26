@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Cashflow
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/cashflow}
+    username: ${DATABASE_USERNAME:cashflow}
+    password: ${DATABASE_PASSWORD:cashflow}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${HIBERNATE_DDL_AUTO:update}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

@@ -1,0 +1,9 @@
+services:
+  database:
+    container_name: cashflow-database
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: cashflow
+      POSTGRES_PASSWORD: cashflow
