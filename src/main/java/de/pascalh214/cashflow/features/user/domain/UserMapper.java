@@ -20,6 +20,7 @@ public class UserMapper {
                 : user.getAccounts().stream()
                 .map(AccountMapper::toAccountEntity)
                 .toList();
+        accounts.forEach(accountEntity -> accountEntity.setUser(userEntity));
         userEntity.setAccounts(accounts);
 
         return userEntity;

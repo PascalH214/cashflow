@@ -1,13 +1,33 @@
 package de.pascalh214.cashflow.features.account.domain;
 
+import de.pascalh214.cashflow.features.user.domain.UserId;
+import lombok.Getter;
+
+@Getter
 public class CreditCard extends Account {
 
-    private CreditCard(AccountId id, AccountType type) {
-        super(id, type);
+    private final String cardNumber;
+
+    private CreditCard(AccountId id, UserId userId, String cardNumber) {
+        super(id, userId, AccountType.CREDIT_CARD);
+
+        this.cardNumber = cardNumber;
     }
 
-    public static CreditCard addAccount(AccountId id, AccountType type) {
-        return new CreditCard(id, type);
+    protected static CreditCard rehydrate(
+            AccountId id,
+            UserId userId,
+            String cardNumber
+    ) {
+        return new CreditCard(id, userId, cardNumber);
+    }
+
+    public static CreditCard addAccount(
+            AccountId id,
+            UserId userId,
+            String cardNumber
+    ) {
+        return new CreditCard(id, userId, cardNumber);
     }
 
 }

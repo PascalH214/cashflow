@@ -1,5 +1,6 @@
 package de.pascalh214.cashflow.features.user.api;
 
+import de.pascalh214.cashflow.features.user.api.dtos.UserInformationResponse;
 import de.pascalh214.cashflow.features.user.application.UserInformationResult;
 import de.pascalh214.cashflow.features.user.application.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,18 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<UserInformationResult> index(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(this.userService.getUserInformation(jwt.getSubject()));
+    public ResponseEntity<UserInformationResponse> index(@AuthenticationPrincipal Jwt jwt) {
+        UserInformationResult userInformationResult = this.userService.getUserInformation(jwt.getSubject());
+        if (userInformationResult instanceof UserInformationResult.Failure failure) {
+            return ResponseEntity.notFound()
+                    .build();
+        }
+
+        UserInformationResult.Success success = (UserInformationResult.Success) userInformationResult;
+        return ResponseEntity.ok(new UserInformationResponse(
+                success.id(),
+                success.accounts()
+        ));
     }
 
 }

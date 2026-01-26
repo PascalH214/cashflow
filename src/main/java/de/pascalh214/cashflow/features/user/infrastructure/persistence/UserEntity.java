@@ -4,9 +4,7 @@ import de.pascalh214.cashflow.features.account.infrastructure.persistence.Accoun
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 import java.time.Instant;
@@ -17,6 +15,7 @@ import java.util.*;
 public class UserEntity {
 
     @Id
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @Column(nullable = false)
@@ -25,12 +24,7 @@ public class UserEntity {
     @Column(nullable = false)
     private Instant updatedAt;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_accounts",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "account_id")
-    )
+    @OneToMany(mappedBy = "user")
     private List<AccountEntity> accounts = new ArrayList<>();
 
 }

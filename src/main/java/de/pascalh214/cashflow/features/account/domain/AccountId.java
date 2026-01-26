@@ -1,4 +1,6 @@
 package de.pascalh214.cashflow.features.account.domain;
 
-public record AccountId(String value) {
+import java.util.UUID;
+
+public record AccountId(UUID value) {
 }

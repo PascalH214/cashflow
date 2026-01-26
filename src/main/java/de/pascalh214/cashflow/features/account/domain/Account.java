@@ -2,6 +2,7 @@ package de.pascalh214.cashflow.features.account.domain;
 
 import de.pascalh214.cashflow.common.domain.AggregateRoot;
 import de.pascalh214.cashflow.features.transaction.domain.Transaction;
+import de.pascalh214.cashflow.features.user.domain.UserId;
 import lombok.Getter;
 
 import java.util.List;
@@ -10,14 +11,17 @@ import java.util.List;
 public abstract class Account extends AggregateRoot {
 
     final private AccountId id;
+    final private UserId userId;
     final private AccountType type;
     final private List<Transaction> transactions = List.of();
 
     protected Account(
             AccountId id,
+            UserId userId,
             AccountType type
     ) {
         this.id = id;
+        this.userId = userId;
         this.type = type;
     }
 }
