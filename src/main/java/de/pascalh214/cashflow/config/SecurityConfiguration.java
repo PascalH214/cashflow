@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import de.pascalh214.cashflow.features.user.infrastructure.security.UserProvisioningFilter;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -29,7 +30,8 @@ public class SecurityConfiguration {
     String jwkSetUri;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, UserProvisioningFilter userProvisioningFilter)
+            throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
@@ -38,6 +40,7 @@ public class SecurityConfiguration {
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(withDefaults())
                 )
+                .addFilterAfter(userProvisioningFilter, BearerTokenAuthenticationFilter.class)
                 .addFilterAfter(createPolicyEnforcerFilter(), BearerTokenAuthenticationFilter.class);
         return http.build();
     }
