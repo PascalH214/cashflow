@@ -1,4 +1,4 @@
-package de.pascalh214.cashflow;
+package de.pascalh214.cashflow.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

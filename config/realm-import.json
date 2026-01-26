@@ -4,6 +4,10 @@
   "requiredCredentials": [
     "password"
   ],
+  "registrationAllowed": true,
+  "rememberMe": true,
+  "verifyEmail": true,
+  "resetPasswordAllowed": true,
   "users": [
     {
       "username": "alice",
@@ -11,6 +15,7 @@
       "lastName": "Liddel",
       "email": "alice@keycloak.org",
       "enabled": true,
+      "emailVerified": true,
       "credentials": [
         {
           "type": "password",

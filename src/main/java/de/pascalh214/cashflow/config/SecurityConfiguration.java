@@ -1,4 +1,4 @@
-package de.pascalh214.cashflow;
+package de.pascalh214.cashflow.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -28,4 +28,5 @@ springdoc:
   swagger-ui:
     oauth:
       client-id: cashflow-core
+      client-secret: secret
       use-pkce-with-authorization-code-grant: true
