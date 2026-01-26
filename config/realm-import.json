@@ -1,0 +1,80 @@
+{
+  "realm": "cashflow",
+  "enabled": true,
+  "requiredCredentials": [
+    "password"
+  ],
+  "users": [
+    {
+      "username": "alice",
+      "firstName": "Alice",
+      "lastName": "Liddel",
+      "email": "alice@keycloak.org",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alice"
+        }
+      ],
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "cashflow-core",
+      "enabled": true,
+      "serviceAccountClientId": "cashflow-core",
+      "clientRoles": {
+        "cashflow-core" : ["uma_protection"]
+      }
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "User privileges"
+      },
+      {
+        "name": "user_premium",
+        "description": "User Premium privileges"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "cashflow-core",
+      "enabled": true,
+      "baseUrl": "http://localhost:8080/",
+      "adminUrl": "http://localhost:8080/",
+      "bearerOnly": false,
+      "redirectUris": [
+        "http://localhost:8080/*",
+        "http://127.0.0.1:8080/*"
+      ],
+      "secret": "secret",
+      "authorizationServicesEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "authorizationSettings": {
+        "resources": [],
+        "policies": [],
+        "scopes": []
+      }
+    },
+    {
+      "clientId": "cashflow-swagger",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": [
+        "http://localhost:8080/swagger-ui/oauth2-redirect.html",
+        "http://localhost:8080/swagger-ui/index.html"
+      ],
+      "webOrigins": [
+        "http://localhost:8080"
+      ]
+    }
+  ]
+}

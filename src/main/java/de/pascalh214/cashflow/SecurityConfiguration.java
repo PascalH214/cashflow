@@ -1,0 +1,68 @@
+package de.pascalh214.cashflow;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.keycloak.adapters.authorization.integration.jakarta.ServletPolicyEnforcerFilter;
+import org.keycloak.adapters.authorization.spi.ConfigurationResolver;
+import org.keycloak.adapters.authorization.spi.HttpRequest;
+import org.keycloak.representations.adapters.config.PolicyEnforcerConfig;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
+import org.springframework.security.web.SecurityFilterChain;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.springframework.security.config.Customizer.withDefaults;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfiguration {
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    String jwkSetUri;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer((oauth2) -> oauth2
+                        .jwt(withDefaults())
+                )
+                .addFilterAfter(createPolicyEnforcerFilter(), BearerTokenAuthenticationFilter.class);
+        return http.build();
+    }
+
+    private ServletPolicyEnforcerFilter createPolicyEnforcerFilter() {
+        PolicyEnforcerConfig config;
+
+        try(InputStream inputStream = getClass().getResourceAsStream("/policy-enforcer.json")) {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
+            config = mapper.readValue(inputStream, PolicyEnforcerConfig.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return new ServletPolicyEnforcerFilter(new ConfigurationResolver() {
+            @Override
+            public PolicyEnforcerConfig resolve(HttpRequest request) {
+                return config;
+            }
+        });
+    }
+
+    @Bean
+    JwtDecoder jwtDecoder() {
+        return NimbusJwtDecoder.withJwkSetUri(this.jwkSetUri).build();
+    }
+
+}

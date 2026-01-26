@@ -12,3 +12,20 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8090/realms/cashflow/protocol/openid-connect/certs
+
+server:
+  port: 8080
+
+springdoc:
+  oauth2:
+    auth-url: http://localhost:8090/realms/cashflow/protocol/openid-connect/auth
+    token-url: http://localhost:8090/realms/cashflow/protocol/openid-connect/token
+  swagger-ui:
+    oauth:
+      client-id: cashflow-core
+      use-pkce-with-authorization-code-grant: true

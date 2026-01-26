@@ -1,0 +1,42 @@
+{
+  "realm": "cashflow",
+  "auth-server-url": "http://localhost:8090",
+  "resource": "cashflow-core",
+  "credentials": {
+    "secret": "secret"
+  },
+  "paths": [
+    {
+      "path": "/swagger-ui/*",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/swagger-ui/**",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/swagger-ui.html",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/v3/api-docs",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/v3/api-docs/*",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/v3/api-docs/**",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/api/*",
+      "enforcement-mode": "DISABLED"
+    },
+    {
+      "path": "/api/**",
+      "enforcement-mode": "DISABLED"
+    }
+  ]
+}
