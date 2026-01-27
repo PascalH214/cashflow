@@ -3,6 +3,7 @@ package de.pascalh214.cashflow.features.account.domain;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.AccountEntity;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.BankAccountEntity;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.CreditCardEntity;
+import de.pascalh214.cashflow.features.country.domain.CountryMapper;
 import de.pascalh214.cashflow.features.user.domain.UserId;
 import org.jspecify.annotations.NonNull;
 
@@ -31,9 +32,9 @@ public class AccountMapper {
 
         bankAccountEntity.setId(account.getId().value());
         bankAccountEntity.setType(account.getType());
-        bankAccountEntity.setCountryCode(account.getCountryCode().value());
         bankAccountEntity.setCheckDigits(account.getCheckDigits());
         bankAccountEntity.setBasicBankAccountNumber(account.getBasicBankAccountNumber());
+        bankAccountEntity.setIban(account.getIban());
 
         return bankAccountEntity;
     }
@@ -42,9 +43,10 @@ public class AccountMapper {
         return BankAccount.rehydrate(
                 new AccountId(account.getId()),
                 new UserId(account.getUser().getId()),
-                new CountryCode(account.getCountryCode()),
+                CountryMapper.toCountry(account.getCountry()),
                 account.getCheckDigits(),
-                account.getBasicBankAccountNumber()
+                account.getBasicBankAccountNumber(),
+                account.getIban()
         );
     }
 

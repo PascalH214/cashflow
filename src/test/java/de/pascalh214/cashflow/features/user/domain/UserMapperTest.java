@@ -4,7 +4,9 @@ import de.pascalh214.cashflow.features.account.domain.Account;
 import de.pascalh214.cashflow.features.account.domain.AccountId;
 import de.pascalh214.cashflow.features.account.domain.AccountType;
 import de.pascalh214.cashflow.features.account.domain.BankAccount;
-import de.pascalh214.cashflow.features.account.domain.CountryCode;
+import de.pascalh214.cashflow.features.country.domain.Country;
+import de.pascalh214.cashflow.features.country.domain.CountryId;
+import de.pascalh214.cashflow.features.country.infrastructure.persistence.CountryEntity;
 import de.pascalh214.cashflow.features.account.domain.CreditCard;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.AccountEntity;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.BankAccountEntity;
@@ -26,9 +28,10 @@ class UserMapperTest {
         BankAccount bankAccount = BankAccount.addAccount(
                 new AccountId(UUID.randomUUID()),
                 userId,
-                new CountryCode("DE"),
+                Country.rehydrate(new CountryId("DE"), "Germany", List.of(), List.of()),
                 12,
-                "1234567890"
+                "1234567890",
+                "DE121234567890"
         );
         CreditCard creditCard = CreditCard.addAccount(
                 new AccountId(UUID.randomUUID()),
@@ -64,9 +67,13 @@ class UserMapperTest {
         bankEntity.setId(UUID.randomUUID());
         bankEntity.setUser(userEntity);
         bankEntity.setType(AccountType.BANK);
-        bankEntity.setCountryCode("DE");
+        CountryEntity countryEntity = new CountryEntity();
+        countryEntity.setAlpha2Code("DE");
+        countryEntity.setName("Germany");
+        bankEntity.setCountry(countryEntity);
         bankEntity.setCheckDigits(12);
         bankEntity.setBasicBankAccountNumber("1234567890");
+        bankEntity.setIban("DE121234567890");
 
         CreditCardEntity creditEntity = new CreditCardEntity();
         creditEntity.setId(UUID.randomUUID());

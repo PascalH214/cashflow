@@ -51,9 +51,10 @@ public class UserService {
             return new UserInformationResult.AccountSummary(
                     bankAccount.getId(),
                     bankAccount.getType(),
-                    bankAccount.getCountryCode().value(),
+                    bankAccount.getCountry().getId().value(),
                     bankAccount.getCheckDigits(),
                     bankAccount.getBasicBankAccountNumber(),
+                    bankAccount.getIban(),
                     null
             );
         }
@@ -62,6 +63,7 @@ public class UserService {
         return new UserInformationResult.AccountSummary(
                 creditCard.getId(),
                 creditCard.getType(),
+                null,
                 null,
                 null,
                 null,

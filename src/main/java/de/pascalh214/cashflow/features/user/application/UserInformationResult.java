@@ -23,6 +23,7 @@ public sealed interface UserInformationResult permits UserInformationResult.Succ
             String countryCode,
             Integer checkDigits,
             String basicBankAccountNumber,
+            String iban,
             String cardNumber
     ) {}
 }

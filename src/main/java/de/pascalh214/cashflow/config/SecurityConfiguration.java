@@ -28,6 +28,12 @@ public class SecurityConfiguration {
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     String jwkSetUri;
 
+    @Value("${keycloak.auth-server-url:}")
+    String keycloakAuthServerUrl;
+
+    @Value("${keycloak.realm:}")
+    String keycloakRealm;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -51,6 +57,12 @@ public class SecurityConfiguration {
             config = mapper.readValue(inputStream, PolicyEnforcerConfig.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        if (!keycloakAuthServerUrl.isBlank()) {
+            config.setAuthServerUrl(keycloakAuthServerUrl);
+        }
+        if (!keycloakRealm.isBlank()) {
+            config.setRealm(keycloakRealm);
         }
         return new ServletPolicyEnforcerFilter(new ConfigurationResolver() {
             @Override

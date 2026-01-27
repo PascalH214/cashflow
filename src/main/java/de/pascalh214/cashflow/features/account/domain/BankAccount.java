@@ -1,43 +1,49 @@
 package de.pascalh214.cashflow.features.account.domain;
 
+import de.pascalh214.cashflow.features.country.domain.Country;
 import de.pascalh214.cashflow.features.user.domain.UserId;
 import lombok.Getter;
 
 @Getter
 public class BankAccount extends Account {
 
-    final private CountryCode countryCode;
+    final private Country country;
     final private int checkDigits;
     final private String basicBankAccountNumber;
+    final private String iban;
 
     private BankAccount(
             AccountId id,
             UserId userId,
 
-            CountryCode countryCode,
+            Country country,
             int checkDigits,
-            String basicBankAccountNumber
+            String basicBankAccountNumber,
+            String iban
     ) {
         super(id, userId, AccountType.BANK);
 
-        this.countryCode = countryCode;
+        this.country = country;
         this.checkDigits = checkDigits;
         this.basicBankAccountNumber = basicBankAccountNumber;
+        this.iban = iban;
     }
 
     protected static BankAccount rehydrate(
             AccountId id,
             UserId userId,
-            CountryCode countryCode,
+            Country country,
             int checkDigits,
-            String basicBankAccountNumber
+            String basicBankAccountNumber,
+            String iban
     ) {
         return new BankAccount(
             id,
             userId,
-            countryCode,
+            country,
             checkDigits,
-            basicBankAccountNumber
+            basicBankAccountNumber,
+            iban
         );
     }
 
@@ -45,16 +51,18 @@ public class BankAccount extends Account {
             AccountId id,
             UserId userId,
 
-            CountryCode countryCode,
+            Country country,
             int checkDigits,
-            String basicBankAccountNumber
+            String basicBankAccountNumber,
+            String iban
     ) {
         return new BankAccount(
                 id,
                 userId,
-                countryCode,
+                country,
                 checkDigits,
-                basicBankAccountNumber
+                basicBankAccountNumber,
+                iban
         );
     }
 

@@ -2,7 +2,8 @@ package de.pascalh214.cashflow.features.user.application;
 
 import de.pascalh214.cashflow.features.account.domain.AccountId;
 import de.pascalh214.cashflow.features.account.domain.BankAccount;
-import de.pascalh214.cashflow.features.account.domain.CountryCode;
+import de.pascalh214.cashflow.features.country.domain.Country;
+import de.pascalh214.cashflow.features.country.domain.CountryId;
 import de.pascalh214.cashflow.features.account.domain.CreditCard;
 import de.pascalh214.cashflow.features.user.domain.User;
 import de.pascalh214.cashflow.features.user.domain.UserId;
@@ -63,9 +64,10 @@ class UserServiceTest {
         BankAccount bankAccount = BankAccount.addAccount(
                 new AccountId(UUID.randomUUID()),
                 userId,
-                new CountryCode("DE"),
+                Country.rehydrate(new CountryId("DE"), "Germany", List.of(), List.of()),
                 12,
-                "1234567890"
+                "1234567890",
+                "DE121234567890"
         );
         CreditCard creditCard = CreditCard.addAccount(
                 new AccountId(UUID.randomUUID()),
@@ -90,6 +92,7 @@ class UserServiceTest {
             assertThat(account.countryCode()).isEqualTo("DE");
             assertThat(account.checkDigits()).isEqualTo(12);
             assertThat(account.basicBankAccountNumber()).isEqualTo("1234567890");
+            assertThat(account.iban()).isEqualTo("DE121234567890");
             assertThat(account.cardNumber()).isNull();
         });
         assertThat(success.accounts()).anySatisfy(account -> {

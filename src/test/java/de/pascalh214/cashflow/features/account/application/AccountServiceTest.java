@@ -4,6 +4,8 @@ import de.pascalh214.cashflow.features.account.domain.Account;
 import de.pascalh214.cashflow.features.account.domain.AccountType;
 import de.pascalh214.cashflow.features.account.domain.BankAccount;
 import de.pascalh214.cashflow.features.account.domain.CreditCard;
+import de.pascalh214.cashflow.features.country.domain.Country;
+import de.pascalh214.cashflow.features.country.domain.CountryId;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -14,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,12 +25,19 @@ class AccountServiceTest {
     @Mock
     private AccountRepository accountRepository;
 
+    @Mock
+    private CountryRepository countryRepository;
+
     @InjectMocks
     private AccountService accountService;
 
     @Test
     void createBankAccountPersistsBankAccount() {
         UUID userId = UUID.randomUUID();
+        when(countryRepository.findById(new CountryId("DE")))
+                .thenReturn(java.util.Optional.of(
+                        Country.rehydrate(new CountryId("DE"), "Germany", java.util.List.of(), java.util.List.of())
+                ));
 
         CreateAccountResult result = accountService.createBankAccount(
                 userId,

@@ -3,10 +3,14 @@ package de.pascalh214.cashflow.features.account.domain;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.AccountEntity;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.BankAccountEntity;
 import de.pascalh214.cashflow.features.account.infrastructure.persistence.CreditCardEntity;
+import de.pascalh214.cashflow.features.country.domain.Country;
+import de.pascalh214.cashflow.features.country.domain.CountryId;
+import de.pascalh214.cashflow.features.country.infrastructure.persistence.CountryEntity;
 import de.pascalh214.cashflow.features.user.domain.UserId;
 import de.pascalh214.cashflow.features.user.infrastructure.persistence.UserEntity;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,18 +25,23 @@ class AccountMapperTest {
         entity.setId(UUID.randomUUID());
         entity.setUser(userEntity);
         entity.setType(AccountType.BANK);
-        entity.setCountryCode("DE");
+        CountryEntity countryEntity = new CountryEntity();
+        countryEntity.setAlpha2Code("DE");
+        countryEntity.setName("Germany");
+        entity.setCountry(countryEntity);
         entity.setCheckDigits(12);
         entity.setBasicBankAccountNumber("1234567890");
+        entity.setIban("DE121234567890");
 
         Account account = AccountMapper.toAccount(entity);
 
         assertThat(account).isInstanceOf(BankAccount.class);
         BankAccount bankAccount = (BankAccount) account;
         assertThat(bankAccount.getUserId()).isEqualTo(new UserId(userEntity.getId()));
-        assertThat(bankAccount.getCountryCode().value()).isEqualTo("DE");
+        assertThat(bankAccount.getCountry().getId()).isEqualTo(new CountryId("DE"));
         assertThat(bankAccount.getCheckDigits()).isEqualTo(12);
         assertThat(bankAccount.getBasicBankAccountNumber()).isEqualTo("1234567890");
+        assertThat(bankAccount.getIban()).isEqualTo("DE121234567890");
     }
 
     @Test
@@ -59,9 +68,10 @@ class AccountMapperTest {
         BankAccount bankAccount = BankAccount.addAccount(
                 new AccountId(UUID.randomUUID()),
                 userId,
-                new CountryCode("DE"),
+                Country.rehydrate(new CountryId("DE"), "Germany", List.of(), List.of()),
                 12,
-                "1234567890"
+                "1234567890",
+                "DE121234567890"
         );
 
         AccountEntity entity = AccountMapper.toAccountEntity(bankAccount);
@@ -69,9 +79,9 @@ class AccountMapperTest {
         assertThat(entity).isInstanceOf(BankAccountEntity.class);
         BankAccountEntity bankEntity = (BankAccountEntity) entity;
         assertThat(bankEntity.getType()).isEqualTo(AccountType.BANK);
-        assertThat(bankEntity.getCountryCode()).isEqualTo("DE");
         assertThat(bankEntity.getCheckDigits()).isEqualTo(12);
         assertThat(bankEntity.getBasicBankAccountNumber()).isEqualTo("1234567890");
+        assertThat(bankEntity.getIban()).isEqualTo("DE121234567890");
     }
 
     @Test
