@@ -17,6 +17,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://localhost:8090/realms/cashflow/protocol/openid-connect/certs
+  docker:
+    compose:
+      lifecycle-management: start_only
 
 server:
   port: 8080

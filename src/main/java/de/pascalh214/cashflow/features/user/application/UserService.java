@@ -5,6 +5,7 @@ import de.pascalh214.cashflow.features.account.domain.BankAccount;
 import de.pascalh214.cashflow.features.account.domain.CreditCard;
 import de.pascalh214.cashflow.features.user.domain.User;
 import de.pascalh214.cashflow.features.user.domain.UserId;
+import de.pascalh214.cashflow.features.user.exceptions.IdNotValidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,37 +22,28 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void ensureUserExists(String userId) {
+    public User getUser(String userId) {
         UserId id;
         try {
             id = new UserId(UUID.fromString(userId));
         } catch (IllegalArgumentException e) {
-            throw e;
+            throw new IdNotValidException("Invalid user id");
         }
 
-        Optional<User> foundUser = this.userRepository.findById(id);
-        if (foundUser.isEmpty()) {
-            this.userRepository.save(User.createUser(Instant.now(), id));
-        }
+        return this.userRepository.findById(id).orElse(
+                this.userRepository.save(User.createUser(Instant.now(), id))
+        );
     }
 
     @Transactional
     public UserInformationResult getUserInformation(String userId) {
-        UserId id;
-        try {
-            id = new UserId(UUID.fromString(userId));
-        } catch (IllegalArgumentException e) {
-            return new UserInformationResult.Failure("Invalid user id");
-        }
-
-        Optional<User> foundUser = this.userRepository.findById(id);
-        User user = foundUser.orElseGet(()
-                -> this.userRepository.save(User.createUser(Instant.now(), id)));
+        User user = this.getUser(userId);
 
         List<UserInformationResult.AccountSummary> accounts = user.getAccounts().stream()
                 .map(this::toAccountSummary)
                 .toList();
-        return new UserInformationResult.Success(id, accounts);
+
+        return new UserInformationResult.Success(user.getId(), accounts);
     }
 
     private UserInformationResult.AccountSummary toAccountSummary(Account account) {
