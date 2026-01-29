@@ -7,6 +7,8 @@ import de.pascalh214.cashflow.features.country.domain.Country;
 import de.pascalh214.cashflow.features.country.domain.Currency;
 import de.pascalh214.cashflow.features.country.domain.Flag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,10 +25,9 @@ public class CountryController {
     private final CountryService countryService;
 
     @GetMapping
-    public ResponseEntity<List<CountryResponse>> index() {
-        List<CountryResponse> response = countryService.listCountries().stream()
-                .map(this::toResponse)
-                .toList();
+    public ResponseEntity<Page<CountryResponse>> index(Pageable pageable) {
+        Page<CountryResponse> response = countryService.listCountries(pageable)
+                .map(this::toResponse);
         return ResponseEntity.ok(response);
     }
 

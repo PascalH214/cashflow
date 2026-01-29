@@ -5,9 +5,10 @@ import de.pascalh214.cashflow.features.country.domain.Country;
 import de.pascalh214.cashflow.features.country.domain.CountryId;
 import de.pascalh214.cashflow.features.country.domain.CountryMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -23,9 +24,8 @@ public class JpaCountryRepository implements CountryRepository {
     }
 
     @Override
-    public List<Country> findAll() {
-        return countryJpaRepository.findAll().stream()
-                .map(CountryMapper::toCountry)
-                .toList();
+    public Page<Country> findAll(Pageable pageable) {
+        return countryJpaRepository.findAll(pageable)
+                .map(CountryMapper::toCountry);
     }
 }
